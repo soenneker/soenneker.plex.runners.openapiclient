@@ -9,9 +9,9 @@ namespace Soenneker.Plex.Runners.OpenApiClient.Utils.Abstract;
 public interface IFileOperationsUtil
 {
     /// <summary>
-    /// Executes the process operation.
+    /// Runs the OpenAPI client regeneration workflow, including cleanup and post-processing.
     /// </summary>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>A task that represents the asynchronous operation.</returns>
+    /// <param name="cancellationToken">Token used to cancel the operation.</param>
+    /// <returns>A task that completes when the full processing workflow has finished.</returns>
     ValueTask Process(CancellationToken cancellationToken = default);
 }

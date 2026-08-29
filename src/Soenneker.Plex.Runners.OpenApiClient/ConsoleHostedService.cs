@@ -28,10 +28,10 @@ public sealed class ConsoleHostedService : IHostedService
     }
 
     /// <summary>
-    /// Executes the start async operation.
+    /// Runs the OpenAPI client update workflow and requests application shutdown when it finishes.
     /// </summary>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>A task that represents the asynchronous operation.</returns>
+    /// <param name="cancellationToken">Token used to cancel the operation.</param>
+    /// <returns>A task that completes when client regeneration has finished and shutdown has been requested.</returns>
     public Task StartAsync(CancellationToken cancellationToken = default)
     {
         _appLifetime.ApplicationStarted.Register(() =>
@@ -70,10 +70,10 @@ public sealed class ConsoleHostedService : IHostedService
     }
 
     /// <summary>
-    /// Executes the stop async operation.
+    /// Completes application-host shutdown after the client update workflow.
     /// </summary>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>A task that represents the asynchronous operation.</returns>
+    /// <param name="cancellationToken">Token used to cancel the operation.</param>
+    /// <returns>A task that completes when host shutdown has finished.</returns>
     public Task StopAsync(CancellationToken cancellationToken)
     {
         _logger.LogDebug("Exiting with return code: {exitCode}", _exitCode);
