@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace Soenneker.Plex.Runners.OpenApiClient.Utils.Abstract;
 
 /// <summary>
-/// Defines the file operations util contract.
+/// Regenerates and publishes the Plex OpenAPI client.
 /// </summary>
 public interface IFileOperationsUtil
 {
