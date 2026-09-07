@@ -92,7 +92,9 @@ public sealed class FileOperationsUtil : IFileOperationsUtil
         }
 
         List<string> dirs = await _directoryUtil.GetAllDirectoriesRecursively(root, cancellationToken);
-        foreach (string dir in dirs.OrderByDescending(static value => value.Length))
+        // Process children before parents without allocating LINQ sorting buffers.
+        dirs.Sort(static (left, right) => right.Length.CompareTo(left.Length));
+        foreach (string dir in dirs)
         {
             string fullPath = EnsureWithinDirectory(root, dir);
             List<string> dirFiles = await _directoryUtil.GetFilesByExtension(fullPath, "", false, cancellationToken);
