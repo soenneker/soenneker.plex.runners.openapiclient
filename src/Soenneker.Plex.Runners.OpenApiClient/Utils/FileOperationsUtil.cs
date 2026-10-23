@@ -1,3 +1,4 @@
+using Soenneker.OpenApi.Fixer.Abstract;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Soenneker.Extensions.String;
@@ -29,12 +30,13 @@ public sealed class FileOperationsUtil : IFileOperationsUtil
     private readonly IDotnetUtil _dotnetUtil;
     private readonly IProcessUtil _processUtil;
     private readonly IKiotaUtil _kiotaUtil;
+    private readonly IOpenApiFixer _openApiFixer;
     private readonly IFileDownloadUtil _fileDownloadUtil;
     private readonly IFileUtil _fileUtil;
     private readonly IDirectoryUtil _directoryUtil;
 
     public FileOperationsUtil(ILogger<FileOperationsUtil> logger, IConfiguration configuration, IGitUtil gitUtil, IDotnetUtil dotnetUtil, IProcessUtil processUtil, 
-        IFileDownloadUtil fileDownloadUtil, IFileUtil fileUtil, IDirectoryUtil directoryUtil, IKiotaUtil kiotaUtil)
+        IFileDownloadUtil fileDownloadUtil, IFileUtil fileUtil, IDirectoryUtil directoryUtil, IKiotaUtil kiotaUtil, IOpenApiFixer openApiFixer)
     {
         _logger = logger;
         _configuration = configuration;
@@ -42,6 +44,7 @@ public sealed class FileOperationsUtil : IFileOperationsUtil
         _dotnetUtil = dotnetUtil;
         _processUtil = processUtil;
         _kiotaUtil = kiotaUtil;
+        _openApiFixer = openApiFixer;
         _fileDownloadUtil = fileDownloadUtil;
         _fileUtil = fileUtil;
         _directoryUtil = directoryUtil;
@@ -70,6 +73,7 @@ public sealed class FileOperationsUtil : IFileOperationsUtil
         await DeleteGeneratedSources(srcDirectory, cancellationToken);
 
         await _kiotaUtil.Generate(filePath, "PlexOpenApiClient", Constants.Library, gitDirectory, cancellationToken).NoSync();
+        await _openApiFixer.SanitizeGeneratedEnumMembers(Path.Combine(gitDirectory, "src", Constants.Library), cancellationToken).NoSync();
 
         await BuildAndPush(gitDirectory, cancellationToken).NoSync();
     }
